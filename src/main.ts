@@ -1,12 +1,17 @@
+// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import express from 'express';
+
+const expressApp = express();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
   app.enableCors({ origin: '*' });
-
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`App is running on http://localhost:${port}`);
+  await app.init();
 }
+
 bootstrap();
+
+export default expressApp;
