@@ -1,16 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import * as express from 'express';
 
-const expressApp = express();
-
-export const createNestServer = async (expressInstance: express.Express) => {
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressInstance));
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
   app.enableCors({ origin: '*' });
-  await app.init();
-};
 
-createNestServer(expressApp);
-
-export const handler = expressApp;
+  // Mau Deploy sẽ cung cấp biến môi trường PORT, hoặc bạn dùng 3000 mặc định
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
+}
+bootstrap();
